@@ -6,7 +6,7 @@ var client = null;
 
 var persist = 'persist.json';
 var persistedData = jsonfile.readFileSync( persist );
-var brightness = 254;
+var brightness = 255;
 
 // Setup th buttons and rotary encoder
 var btn = new Gpio(7, 'in', 'both', {
@@ -18,15 +18,17 @@ var a = new Gpio(0, 'in', 'both',{
 });
 
 var b = new Gpio(1, 'in', 'both',{
-    debounceTimeout: 50
+    debounceTimeout: 200
 });
+
+var apiBaseUrl;
 
 // Set default Values
 var brightness = 255;
 
 function setState( on, brightness )
 {
-  request.put( 'http://' + persistedData.ip + '/api/' + persistedData.username + '/lights/4/state', {
+  request.put( apiBaseUrl + persistedData.username + '/lights/4/state', {
     json: {
       on: on,
       brightness: brightness
@@ -43,16 +45,17 @@ request( 'https://www.meethue.com/api/nupnp', function( error, response, body ){
   persistedData.ip = JSON.parse( body )[0].internalipaddress;
   jsonfile.writeFile( persist, persistedData );
 
+  apiBaseUrl = apiBaseUrl;
+
   // Do we need to create a user?
   if( typeof persistedData.username == 'undefined' || ! persistedData.username )
   {
-    request.post( 'http://' + persistedData.ip + '/api', {
+    request.post( apiBaseUrl, {
       json: {
         devicetype: 'chip_hue_switch'
       }
     }, function( error, response, body ){
       persistedData.username = body[0].success.username;
-
       jsonfile.writeFile( persist, persistedData );
     });
   }
@@ -62,7 +65,7 @@ btn.watch(function (err, value) {
   console.log('press', value);
   console.log( persistedData.username );
 
-  request( 'http://' + persistedData.ip + '/api/' + persistedData.username + '/lights', function( error, response, body ){
+  request( apiBaseUrl + persistedData.username + '/lights', function( error, response, body ){
   	body = JSON.parse( body );
   	var newState = ! body[4].state.on;
 
