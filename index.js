@@ -24,6 +24,16 @@ var b = new Gpio(1, 'in', 'both',{
 // Set default Values
 var brightness = 255;
 
+function setState( on, brightness )
+{
+  request.put( 'http://' + persistedData.ip + '/api/' + persistedData.username + '/lights/4/state', {
+    json: {
+      on: on,
+      brightness: brightness
+    }
+  });
+}
+
 /*
 *  Connect to the Bridge
 */
@@ -56,11 +66,7 @@ btn.watch(function (err, value) {
   	body = JSON.parse( body );
   	var newState = ! body[4].state.on;
 
-  	request.put( 'http://' + persistedData.ip + '/api/' + persistedData.username + '/lights/4/state', {
-  		json: {
-	  		on: newState
-  		}
-  	});
+    setState( newState, brightness );
 
   });
 
@@ -74,24 +80,17 @@ function setBrightness()
 {
 	if( brightness >= 255 ) brightness = 255;
 	if( brightness <= 1 ) brightness = 1;
-	
+
 	console.info( 'Setting brightness to ' + brightness );
-	
-	request.put( 'http://' + persistedData.ip + '/api/' + persistedData.username + '/lights/4/state', {
-  		json: {
-	  		on: true,
-	  		bri: brightness
-  		}
-  	}, function( error, response, body ){
-  		console.log( response.statusCode );
-  	});
+
+  setState( true, brightness );
 }
 
 a.watch(function (err, value) {
 	var direction = '';
 	var currentA = a.read();
 	var currentB = b.read();
-	
+
 	if( previousA != currentA )
 	{
 		if( currentA != currentB )
@@ -106,13 +105,6 @@ a.watch(function (err, value) {
 		}
 	}
 
-/*  	console.log({
-		a: a.read(),
-		b: b.read(),
-		direction: direction,
-		brightness: brightness
-	}); */
-	
 	setBrightness( brightness );
 });
 
@@ -120,7 +112,7 @@ b.watch(function (err, value) {
 	var direction = '';
 	var currentA = a.read();
 	var currentB = b.read();
-	
+
 	if( previousB != currentB )
 	{
 		if( currentA == currentB )
@@ -134,16 +126,8 @@ b.watch(function (err, value) {
 			brightness = brightness - 2.55;
 		}
 	}
-	
+
 	setBrightness( brightness );
-
-/* 	console.log({
-		a: a.read(),
-		b: b.read(),
-		direction: direction,
-		brightness: brightness
-	}); */
-
 });
 
 
