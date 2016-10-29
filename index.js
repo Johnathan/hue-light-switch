@@ -1,30 +1,29 @@
 'use strict';
-var Gpio = require('chip-gpio').Gpio;
-var request = require( 'request' );
-var jsonfile = require( 'jsonfile' );
-var client = null;
+var Gpio = require('chip-gpio').Gpio,
+    request = require( 'request' ),
+    jsonfile = require( 'jsonfile' ),
+    client = null,
 
-var persist = 'persist.json';
-var persistedData = jsonfile.readFileSync( persist );
-var brightness = 255;
+    persist = 'persist.json',
+    persistedData = jsonfile.readFileSync( persist ),
+    brightness = 255;
 
 // Setup th buttons and rotary encoder
 var btn = new Gpio(7, 'in', 'both', {
-    debounceTimeout: 500
-});
+      debounceTimeout: 500
+    }),
 
-var a = new Gpio(0, 'in', 'both',{
-    debounceTimeout: 200
-});
+    a = new Gpio(0, 'in', 'both',{
+        debounceTimeout: 200
+    }),
 
-var b = new Gpio(1, 'in', 'both',{
-    debounceTimeout: 200
-});
+    b = new Gpio(1, 'in', 'both',{
+      debounceTimeout: 200
+    });
 
-var apiBaseUrl;
-
-// Set default Values
-var brightness = 255;
+var apiBaseUrl,
+    // Set default Values
+    brightness = 255;
 
 function setState( on, brightness )
 {
