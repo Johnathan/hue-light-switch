@@ -36,7 +36,7 @@ function setState( on, brightness )
   request.put( apiBaseUrl + persistedData.username + '/lights/4/state', {
     json: {
       on: on,
-      bri: brightness
+      bri: Math.ceil( brightness )
     }
   });
 }
