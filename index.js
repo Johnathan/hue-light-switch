@@ -1,6 +1,6 @@
 'use strict';
 
-console.log( 5 );
+console.log( 6 );
 
 var Gpio = require('chip-gpio').Gpio,
     request = require( 'request' ),
@@ -34,7 +34,7 @@ function setState( on, brightness )
   request.put( apiBaseUrl + persistedData.username + '/lights/4/state', {
     json: {
       on: on,
-      brightness: brightness
+      bri: brightness
     }
   });
 }
