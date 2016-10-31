@@ -16,9 +16,9 @@ var red = new Gpio( 2, 'out' );
 var green = new Gpio( 3, 'out' );
 var blue = new Gpio( 4, 'out' );
 
-red.write( 1 );
-green.write( 1 );
-blue.write( 1 );
+// red.write( 1 );
+// green.write( 1 );
+// blue.write( 1 );
 
 setTimeout(function(){
   red.write( 0 );
