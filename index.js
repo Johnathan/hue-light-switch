@@ -1,6 +1,6 @@
 'use strict';
 
-console.log( 4 );
+console.log( 5 );
 
 var Gpio = require('chip-gpio').Gpio,
     request = require( 'request' ),
@@ -48,7 +48,7 @@ request( 'https://www.meethue.com/api/nupnp', function( error, response, body ){
   persistedData.ip = JSON.parse( body )[0].internalipaddress;
   jsonfile.writeFile( persist, persistedData );
 
-  apiBaseUrl = 'http://' + persistedData.ip + '/';
+  apiBaseUrl = 'http://' + persistedData.ip + '/api/';
   console.log( apiBaseUrl );
 
   // Do we need to create a user?
