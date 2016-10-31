@@ -12,6 +12,7 @@ var Gpio = require('chip-gpio').Gpio,
     brightness = 255;
 
 
+// Needs work..
 var red = new Gpio( 2, 'out' );
 var green = new Gpio( 3, 'out' );
 var blue = new Gpio( 4, 'out' );
