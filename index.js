@@ -16,21 +16,7 @@ var red = new Gpio( 2, 'out' );
 var green = new Gpio( 3, 'out' );
 var blue = new Gpio( 4, 'out' );
 
-// red.write( 1 );
-// green.write( 1 );
-// blue.write( 1 );
-
-setTimeout(function(){
-  red.write( 0 );
-}, 500 );
-
-setTimeout(function(){
-  green.write( 0 );
-}, 1000 );
-
-setTimeout(function(){
-  blue.write( 0 );
-}, 1500 );
+// led.write( 0 ) to turn on
 
 
 // Setup th buttons and rotary encoder
