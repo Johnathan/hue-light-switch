@@ -30,7 +30,9 @@ var apiBaseUrl,
 
 function setState( on, brightness )
 {
-  console.log( 'setState', apiBaseUrl );
+  console.log( 'setState', {
+    on, brightness
+  });
   request.put( apiBaseUrl + persistedData.username + '/lights/4/state', {
     json: {
       on: on,
