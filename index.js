@@ -1,4 +1,7 @@
 'use strict';
+
+console.log( 1 );
+
 var Gpio = require('chip-gpio').Gpio,
     request = require( 'request' ),
     jsonfile = require( 'jsonfile' ),
