@@ -44,7 +44,7 @@ request( 'https://www.meethue.com/api/nupnp', function( error, response, body ){
   persistedData.ip = JSON.parse( body )[0].internalipaddress;
   jsonfile.writeFile( persist, persistedData );
 
-  apiBaseUrl = apiBaseUrl;
+  apiBaseUrl = 'http://' + persistedData.ip + '/';
 
   // Do we need to create a user?
   if( typeof persistedData.username == 'undefined' || ! persistedData.username )
