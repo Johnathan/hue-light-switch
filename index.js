@@ -1,6 +1,6 @@
 'use strict';
 
-console.log( 2 );
+console.log( 4 );
 
 var Gpio = require('chip-gpio').Gpio,
     request = require( 'request' ),
@@ -67,7 +67,7 @@ request( 'https://www.meethue.com/api/nupnp', function( error, response, body ){
 
 btn.watch(function (err, value) {
   console.log('press', value);
-  console.log( persistedData.username );
+  console.log( apiBaseUrl + persistedData.username + '/lights' );
 
   request( apiBaseUrl + persistedData.username + '/lights', function( error, response, body ){
   	body = JSON.parse( body );
