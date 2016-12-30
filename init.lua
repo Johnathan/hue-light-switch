@@ -1,15 +1,11 @@
 require 'StatusLight'
 
-local first = StatusLight:new({
-  redPin = 1,
+-- Timer ID's
+statusLightTimerId = 1
+
+local statusLed = StatusLight:new({
+  timerId = statusLightTimerId,
+  redPin = 3,
   greenPin = 2,
-  bluePin = 3
+  bluePin = 1
 })
-
-local second = StatusLight:new({
-  redPin = 4,
-  greenPin = 5,
-  bluePin = 6
-})
-
-first:flashRed( 100 )
