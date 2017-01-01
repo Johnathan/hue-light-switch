@@ -32,6 +32,7 @@ function StatusLight:flash( pin, flashInterval )
 end
 
 function StatusLight:stopFlash()
+  self:turnOff()
   tmr.stop( self.timerId )
 end
 
@@ -39,7 +40,7 @@ function StatusLight:turnOn( pin )
   gpio.write( pin, gpio.LOW )
 end
 
-function StatusLight.turnOff()
+function StatusLight:turnOff()
   gpio.write( self.redPin, gpio.HIGH )
   gpio.write( self.greenPin, gpio.HIGH )
   gpio.write( self.bluePin, gpio.HIGH )
