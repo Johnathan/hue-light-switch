@@ -17,7 +17,7 @@ ssid_set, ssid = read_setting( "ssid" )
 pwd_set, pwd = read_setting( "pwd" )
 
 function initialConnection()
-  wifi.setmode(wifi.SOFTAP)
+  wifi.setmode(wifi.STATIONAP)
 
 	-- Setup as Access Point
 	print(wifi.ap.config({
@@ -26,16 +26,39 @@ function initialConnection()
 		auth = wifi.OPEN
 	}))
 
-  server = net.createServer(net.TCP, 30)
+  srv = net.createServer(net.TCP)
 
-  if server then
-    server:listen(80, function(conn)
-      conn:on("receive",function(conn,payload)
+  srv:listen(80, function(conn)
+    conn:on("receive", function(sck, payload)
         print(payload)
-        conn:send("<h1> Hello, NodeMCU!!! </h1>")
-      end)
+
+        response = "HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n"
+
+
+        -- GET /access-points (returns json with a list of nearby access points)
+        if( payload.match( payload, "GET /access%-points" ) ) then
+          -- Return a list of available access points
+
+          wifi.sta.getap(function(ssids)
+            response = response.."{\"ssids\":["
+            for ssid,v in pairs(ssids) do
+              response = response.."\""..ssid.."\""
+
+              if( next( ssids, ssid ) ~= nil ) then
+                response = response..","
+              end
+            end
+            response = response.."]}"
+
+            sck:send(response)
+          end)
+        end
     end)
-  end
+
+    conn:on("sent", function(sck)
+      sck:close()
+    end)
+end)
 
   -- statusLed:flashBlue( 100 )
 end
