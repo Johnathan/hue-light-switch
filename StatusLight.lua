@@ -1,72 +1,72 @@
 StatusLight = {
-  timerId = nil,
-  redPin = nil,
-  greenPin = nil,
-  bluePin = nil
+    timerId = nil,
+    redPin = nil,
+    greenPin = nil,
+    bluePin = nil
 }
 
-function StatusLight:new( pins )
+function StatusLight:new(pins)
 
-  pins = pins or {}
+    pins = pins or {}
 
-  setmetatable( pins, self )
-  self.__index = self
+    setmetatable(pins, self)
+    self.__index = self
 
-  -- Set all outputs to HIGH to turn them off
-  gpio.write( pins.redPin, gpio.HIGH )
-  gpio.write( pins.greenPin, gpio.HIGH )
-  gpio.write( pins.bluePin, gpio.HIGH )
+    -- Set all outputs to LOW to turn them off
+    gpio.write(pins.redPin, gpio.LOW)
+    gpio.write(pins.greenPin, gpio.LOW)
+    gpio.write(pins.bluePin, gpio.LOW)
 
-  return pins
+    return pins
 end
 
-function StatusLight:flash( pin, flashInterval )
-  self:stopFlash()
+function StatusLight:flash(pin, flashInterval)
+    self:stopFlash()
 
-  value = true
+    local value = true
 
-  tmr.alarm( self.timerId, flashInterval, 1, function()
-    gpio.write( pin, value and gpio.HIGH or gpio.LOW )
-    value = not value
-  end)
+    tmr.alarm(self.timerId, flashInterval, 1, function()
+        gpio.write(pin, value and gpio.LOW or gpio.HIGH)
+        value = not value
+    end)
 end
 
 function StatusLight:stopFlash()
-  self:turnOff()
-  tmr.stop( self.timerId )
+    self:turnOff()
+    tmr.stop(self.timerId)
 end
 
-function StatusLight:turnOn( pin )
-  gpio.write( pin, gpio.LOW )
+function StatusLight:turnOn(pin)
+    gpio.write(pin, gpio.HIGH)
 end
 
 function StatusLight:turnOff()
-  gpio.write( self.redPin, gpio.HIGH )
-  gpio.write( self.greenPin, gpio.HIGH )
-  gpio.write( self.bluePin, gpio.HIGH )
+    gpio.write(self.redPin, gpio.LOW)
+    gpio.write(self.greenPin, gpio.LOW)
+    gpio.write(self.bluePin, gpio.LOW)
 end
 
 -- Helpers
-function StatusLight:flashRed( flashInterval )
-  self:flash( self.redPin, flashInterval )
+function StatusLight:flashRed(flashInterval)
+    self:flash(self.redPin, flashInterval)
 end
 
-function StatusLight:flashGreen( flashInterval )
-  self:flash( self.greenPin, flashInterval )
+function StatusLight:flashGreen(flashInterval)
+    self:flash(self.greenPin, flashInterval)
 end
 
-function StatusLight:flashBlue( flashInterval )
-  self:flash( self.bluePin, flashInterval )
+function StatusLight:flashBlue(flashInterval)
+    self:flash(self.bluePin, flashInterval)
 end
 
 function StatusLight:turnOnRed()
-  self:turnOn( self.redPin )
+    self:turnOn(self.redPin)
 end
 
 function StatusLight:turnOnGreen()
-  self:turnOn( self.greenPin )
+    self:turnOn(self.greenPin)
 end
 
 function StatusLight:turnOnBlue()
-  self:turnOn( self.bluePin )
+    self:turnOn(self.bluePin)
 end
