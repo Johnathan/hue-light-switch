@@ -1,7 +1,6 @@
 require 'persistence'
-http_server_request = require 'httpserver-request'
 require 'StatusLight'
-
+espress = require 'espress'
 
 -- Helpers
 function tprint(tbl, indent)
@@ -35,7 +34,6 @@ ssid_set, ssid = read_setting("ssid")
 pwd_set, pwd = read_setting("pwd")
 
 function initialConnection()
-    wifi.sta.sethostname("HAME-DEVICE")
     wifi.setmode(wifi.STATIONAP)
 
     -- Setup as Access Point
@@ -44,63 +42,12 @@ function initialConnection()
         pwd = "hamepassword",
         auth = wifi.OPEN
     })
-    print(wifi.sta.gethostname())
 
-    local srv = net.createServer(net.TCP)
+    local server = espress.createserver();
 
-    srv:listen(80, function(conn)
-        conn:on("receive", function(sck, payload)
-            -- print(payload)
+    server:use("routes_auto.lua")
 
-            local response = "HTTP/1.0 200 OK\r\nContent-Type: application/json\r\n\r\n"
-
-
-            local request = http_server_request(payload)
-            print(payload)
-
-            if (payload.match(payload, "GET /ping")) then
-                response = response .. "{\"device\":\"Light Switch\"}"
-                sck:send(response)
-            end
-
-            -- GET /access-points (returns json with a list of nearby access points)
-            if (payload.match(payload, "GET /access%-points")) then
-                -- Return a list of available access points
-                wifi.sta.getap(function(ssids)
-                    response = response .. "{\"ssids\":["
-                    for ssid in pairs(ssids) do
-                        response = response .. "\"" .. ssid .. "\""
-
-                        if (next(ssids, ssid) ~= nil) then
-                            response = response .. ","
-                        end
-                    end
-                    response = response .. "]}"
-
-                    sck:send(response)
-                end)
-            end
-
-            -- POST /access-points (returns json with a list of nearby access points)
-            if (payload.match(payload, "POST /access%-points")) then
-                -- Return a list of available access points
-                local ssid = request.uri["args"]["ssid"]
-                local password = request.uri["args"]["password"]
-                sck:send(response)
-
-                save_setting("ssid", ssid)
-                save_setting("pwd", password)
-
-                connectToNetwork(ssid, password)
-            end
-        end)
-
-        conn:on("sent", function(sck)
-            sck:close()
-        end)
-    end)
-
-    -- statusLed:flashBlue( 100 )
+    server:listen(80);
 end
 
 function getWifiStatus()
@@ -113,7 +60,6 @@ function getWifiStatus()
         tmr.alarm(connectionSuccessTimerId, 3000, tmr.ALARM_SINGLE, function()
             statusLed:turnOff()
         end)
-
 
         print('Connected with WiFi. IP Address: ' .. ip)
 
@@ -143,7 +89,7 @@ function connectToNetwork(ssid, pwd)
         tmr.delay(STATUS_CHECK_INTERVAL)
 
         --- Stop from getting into infinite loop ---
-        local STATUS_CHECK_COUNTER = STATUS_CHECK_COUNTER + 1
+        STATUS_CHECK_COUNTER = STATUS_CHECK_COUNTER + 1
         if STOP_AFTER_ATTEMPTS == STATUS_CHECK_COUNTER then
             tmr.stop(ipTimerId)
             statusLed:turnOnRed()
